@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<config version="1.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://scmwww/www_scc/schemas/prjlogin.xsd">
+
+  <depends platform="Win|Linux" />
+
+  <info>
+    Information for $ENV{SSMS_PROJECT_ROOT}
+  </info>
+
+  <!-- handle skipping login when requested -->
+  <property skipLogin="GHB|SKIPLOGIN"/>
+  <condition ghbtype1="0" kind="property" name="TYPE" value="${skipLogin}">
+    <!--condition TYPE="${skipLogin}"-->
+    <echo message="+++ skiping login process due to condition TYPE matching ${TYPE}"/>
+  </condition>
+  
+  <!-- else branch of previous condition ghbtype1-->
+  <condition ghbtype2="0" type="not" kind="property" name="TYPE" value="${skipLogin}">
+
+    <!-- set application for naming products, must not be identical to product name -->
+    <property application=""/>
+
+    <!-- set production environment -->
+    <property bpvEnv="prod" />
+    
+    <echo message="+++ Component Platform Environment is set to [${bpvEnv}]."/>
+
+    <!-- define common build platform components including version -->
+    <property bpvMaven="3.3.9_artifactory" />
+   
+    <!-- define platform dependend build components including version -->
+	  <platform name="Win">
+       <property bpvJdk="1.8.0_60b27-x86_64" />
+       <property bpvEclipse="4.5.0-jee-x86_64" />
+       <property bpvIntellij="15.0.3"/>
+    </platform>
+	
+    <platform name="Lin">
+       <property bpvJdk="1.8.0_60b27" />
+       <property bpvEclipse="4.3.1-java" /> 
+    </platform>
+	
+	
+    <!-- default answers while logging in in silent mode -->
+    <property pSilentOption="l" />
+    <condition TYPE="RELEASE|CI|TEAM|TEAM-IB|integration">
+      <property pSilentOption="r" />
+    </condition>
+    
+    
+    <!-- set default build platform for ALL platforms -->
+    <component name="jdk"    version="${bpvJdk}"   validUserOption="l|c|r|h" silentOption="${pSilentOption}" environment="${bpvEnv}"/>
+    <component name="maven"  version="${bpvMaven}" validUserOption="l|c|r|h" silentOption="${pSilentOption}" environment="${bpvEnv}"/>
+
+		<!-- define platform dependent properties -->
+    <platform name="Linux.*">
+      <property separator="/" />
+      <property cat="cat" />
+      <property osversion="$ENV{OSVERS}" />
+      <property platform="$ENV{PLAT}" />
+      <property extension="" />
+    </platform>
+
+    <platform name="Win">
+      <property separator="\" />
+      <property cat="type" />
+      <property osversion="32" />
+      <property platform="win" />
+      <property extension="" />
+    </platform>
+
+    <property version="0.0-${VIEW}"/>
+    <!-- set version explicitly for builds from tscm -->
+    <input property="version" message="Please enter version to build: " validargs="\d+\.\d+\.\d+\.\d+" user="tscm"/>
+    <environment SSMS_BLD_VERSION="${version}" />
+
+    <!-- define env vars -->
+    <environment SSMS_BLD_APPLICATION="${application}" />
+    <environment SSMS_BLD_PLATFORM="${platform}" />
+    <environment SSMS_BLD_OS_VERSION="${osversion}" />
+    <environment SSMS_BLD_BUILDNAME="${platform}${osversion}${application}${extension}" />
+    
+
+    <!-- enable authentication for each developer to be able to do maven deploy  -->
+    <condition TYPE="develop">
+      <echo message="+++ enable authentication"/>
+      <environment SSMS_BLD_MVN_USER="anonymous" />
+      <environment SSMS_BLD_MVN_PWD="anonymous" />
+    </condition>
+    
+    <!-- generate version file -->
+    <!-- uncomment when working with Maven pom-files >
+    <echo message="+++ generating files with version ${version}" />
+
+    <environment
+                patchPoms="patch.pl -D PATCHDIR=${PROJROOT}/source -D PRODUCT_VERSION=${version} -xmlfile ${PROJROOT}/rules/login/patchPom.xml" />
+
+    <exec executable="$ENV{patchPoms}" />
+    -->
+
+   
+		<!-- platform dependent components -->
+    <platform name="Win">
+      <component name="eclipse" version="${bpvEclipse}" autostart="ask" validUserOption="l|c|n|h" silentOption="${pSilentOption}" environment="${bpvEnv}">
+         <plugIn name="sonar"   version="2.4.0" />  
+ 
+      </component>
+	    <component name="intellij" version="${bpvIntellij}" autostart="ask" validUserOption="l|c|n|h" silentOption="n"/>
+    </platform>
+
+    <!-- local GIT configurations -->
+    <property glob="--global"/>
+    <!-- this line ensures your name is configured properly -->
+    <exec executable='git config --replace-all ${glob} user.name "$ENV{SSMS_USER_FULLNAME}"' />
+    <!-- this line ensures your email address is configured properly -->
+    <exec executable='git config --replace-all ${glob} user.email $ENV{SSMS_USER_EMAIL}' />
+    <!-- this line configures some basic excludes -->
+    <exec executable='git config ${glob} core.excludesfile "$ENV{SSMS_ENV_COMMON_DAT}/.gitignore"' />
+    <!-- this line configures the root certificate for SIX DevEnv -->
+      <exec executable='git config ${glob} http.sslCAinfo "$ENV{SSMS_ENV_COMMON_DAT}/Root-CA-DevEnv.cer"' />
+      <!-- <exec executable='git config ${glob} http.sslCAinfo "$ENV{SSMS_ENV_COMMON_DAT}/Root-CA-DevEnv.cer"' /> -->
+
+    <platform name="Win">
+      <!-- this line enables long paths on Windows -->
+      <exec executable='git config ${glob} core.longpaths true' />
+      <!-- this line sets the pager to type on Windows -->
+      <exec executable='git config ${glob} core.pager type' />
+      <!-- this line enables autocrlf to better support git exchange on different environments -->
+      <exec executable='git config ${glob} core.autocrlf true' />
+      <!-- this line sets UltraEdit as your standard editor for git on Windows -->
+      <exec executable='git config ${glob} core.editor "C:\Program Files (x86)\IDM Computer Solutions\UltraEdit\Uedit32.exe" ' />
+      <!-- this line stores the password on Windows - so you only need to login once -->
+      <exec executable='git config ${glob} credential.helper wincred' />
+    </platform>
+
+    <platform name="Linux.*">
+      <!-- this line sets the pager to cat on Linux -->
+      <exec executable='git config ${glob} core.pager cat' />
+      <!-- this line sets vi as your standard editor for git on Linux -->
+      <exec executable='git config ${glob} core.editor vim' />
+      <!-- this line sets autocrlf to input otherwhise CRLF could be handled in a wrong way -->
+    	<exec executable='git config ${glob} core.autocrlf input' />
+      <!-- this line stores the password on Linux - so you only need to login once -->
+      <!-- sadly this does not work yet as the module of git is not available
+      <exec executable='git config ${glob} credential.helper cache' />
+      -->
+    </platform>
+
+
+      <!--
+      please contact us if you need any further configuration options
+      -->
+
+
+    <chdir name="source" />
+
+    <!-- detect current branch and set as environment variable -->
+    <input cmd="git rev-parse --abbrev-ref HEAD" property="currBranch"/>
+    <environment SSMS_BLD_BRANCH="${currBranch}"/>
+    <!-- get mvn information from POM files -->
+    <platform name="Linux">
+
+      <input cmd='mvn org.codehaus.mojo:exec-maven-plugin:exec --non-recursive -q -Dexec.executable="echo" -Dexec.args="\${project.version}"' property="projVersion"/>
+      <input cmd='mvn org.codehaus.mojo:exec-maven-plugin:exec --non-recursive -q -Dexec.executable="echo" -Dexec.args="\${project.ArtifactId}"' property="projArtifactId"/>
+      <input cmd='mvn org.codehaus.mojo:exec-maven-plugin:exec --non-recursive -q -Dexec.executable="echo" -Dexec.args="\${project.GroupId}"' property="projGroupId"/>
+    
+    </platform>
+    
+    <platform name="Win">
+    	<input cmd='mvn org.codehaus.mojo:exec-maven-plugin:exec --non-recursive -q -Dexec.executable="cmd" -Dexec.args="/C echo ${project.version}"' property="projVersion"/>
+      <input cmd='mvn org.codehaus.mojo:exec-maven-plugin:exec --non-recursive -q -Dexec.executable="cmd" -Dexec.args="/C echo ${project.ArtifactId}"' property="projArtifactId"/>
+      <input cmd='mvn org.codehaus.mojo:exec-maven-plugin:exec --non-recursive -q -Dexec.executable="cmd" -Dexec.args="/C echo ${project.GroupId}"' property="projGroupId"/>
+    </platform>
+    <environment SSMS_BLD_PROJVERSION="${projVersion}"/>
+    <environment SSMS_BLD_PROJARTIFACTID="${projArtifactId}"/>
+    <environment SSMS_BLD_PROJGROUPID="${projGroupId}"/>
+
+
+  </condition>
+
+  <echo message="+++ login finished succesfully." />
+
+</config>

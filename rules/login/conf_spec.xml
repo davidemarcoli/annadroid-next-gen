@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configSpec version="1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://scmwww/www_scc/schemas/confspec.xsd">
+
+	<!-- 
+	the xml elements below can serve as examples. 
+	
+        <using name="JAVA-EE-COMMON"  version="1.0.0.9" kind="ENV">
+          <overwrite type="devel|patch"       version="ASK"     silent="1.0.0.9" searchorder="TEAM,TEAM_IB,RELEASE,CI"/>
+          <overwrite type="CI|TEAM$|TEAM_IB"  version="LATEST"  silent="1.0.0.9" searchorder="TEAM"/>
+        </using>
+
+	   add tpp dependency to other products as followed
+	
+	<using name="XSTREAM"  label="rQP3_12_0"/>
+	<using name="WOMBAT"   label="rWB1_2_14"/>
+	<using name="XERCES"   label="rXSC2_8_0_0"/>	
+	-->
+
+</configSpec>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<build version="1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://scmwww/www_scc/schemas/buildconfig.xsd">
+
+  <platform name="Linux|Win">
+
+    <platform name="Linux">
+      <property slash="/" />
+    </platform>
+
+    <platform name="Win">
+      <property slash="\\" />
+    </platform>
+
+    <property exitvalue="0"/>
+    <property buildOption=""/>
+
+		<!-- define standard build -->
+    <BuildCollection filter="FullBuild"/>
+    <!--
+      Handle old style  sonar builds
+    -->
+    <condition enableSonar="true">
+      <BuildCollection filter="Sonar"/>
+    </condition>
+    
+    <!--
+      Handle build options for different maven build types
+      -->
+    <property pType="$ENV{SSMS_BLD_TYPE}"/>
+
+		<!-- default buildCommand if no build type is set -->
+    <property buildCommand="mvn ${buildOption} clean install"/>
+
+    <condition pType="frozen|CI|TEAM.*">
+      <property buildCommand="mvn ${buildOption} -U -B -Dmaven.test.skip=false clean deploy"/>
+    </condition>
+    <condition pType="integration|RELEASE">
+      <property buildCommand="mvn ${buildOption} -U -B -Prelease,sonar -Dmaven.test.skip=false clean deploy"/>
+    </condition>
+
+    <!-- start the builds -->
+    <condition exitvalue="0">
+			<!-- adjust the starting directory here -->
+      <Build description="$ENV{SSMS_BLD_PRODUCT}  build" name="FullBuild">
+        <chdir name="$ENV{SSMS_PROJECT_ROOT}${slash}source${slash}"/>
+        <echo message="+++ ${USER} : ${buildCommand}"/>
+        <exec executable="${buildCommand}" exitcode="exitvalue"/>
+      </Build>
+
+			<!-- adjust the starting directory here -->
+      <Build description="$ENV{SSMS_BLD_PRODUCT} build with Sonar" name="Sonar">
+        <chdir name="$ENV{SSMS_PROJECT_ROOT}${slash}source${slash}"/>
+        <property buildCommand="${buildCommand} sonar:sonar"/>
+        <echo message="+++ ${USER} : ${buildCommand}"/>
+        <exec executable="${buildCommand}" exitcode="exitvalue"/>
+      </Build>
+
+			<!-- populate built version for reuse as dependency -->
+      <condition pType="CI|TEAM|TEAM_IB|RELEASE">		
+         <property  name="${USER}/${pType}/$ENV{SSMS_BLD_PRODUCT}_LATEST" value="$ENV{SSMS_BLD_VERSION}" type="bld"/> 
+      </condition>
+
+    </condition>
+
+		<!-- check last exitcode -->
+    <condition exit="true" type="not" kind="property" name="exitvalue" value="0">
+      <exit exitcode="${exitvalue}" message="+++ Build failed with exitcode ${exitvalue} +++"/>
+    </condition>
+
+  </platform>
+</build>

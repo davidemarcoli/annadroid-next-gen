@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<patch version="1.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://scmwww/www_scc/schemas/patchconfig.xsd">
+
+  <depends property="PATCHDIR"/>
+  <depends property="PRODUCT_VERSION"/>
+
+
+  <Patch name="PATCH-POMS">
+    <property patchbase="${PATCHDIR}" />
+
+    <replace type="tpl" template="pom_template.xml$/pom.xml">
+      <token name="\$\{patch.PRODUCT_VERSION}" value="${PRODUCT_VERSION}"/>
+      <fileset dir="${patchbase}" pattern="*.xml"  />
+      <fileset dir="${patchbase}" pattern="*/*.xml"/>
+      <fileset dir="${patchbase}" pattern="*/*/*.xml"/>
+    </replace>
+
+  </Patch>
+</patch>

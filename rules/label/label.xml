@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<label version="1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://scmwww/www_scc/schemas/labelconfig.xsd">
+
+  <property pType="$ENV{SSMS_BLD_TYPE}"/>
+  
+  <!-- 
+    default values 
+    -->
+  <property create="true"/>
+  <property lock="false"/>
+  <property unlock="false"/>
+
+  <condition pType="CI|TEAM|TEAM_IB|RELEASE">
+    <property lock="true"/>
+    <property unlock="false"/>
+  </condition>	
+
+  <property labeldir="$ENV{SSMS_PROJECT_ROOT}"/>
+
+  <LabelSet name="FULL"
+    description="Will label the complete product"
+    create="${create}"
+    lock="${lock}"
+    unlock="${unlock}"
+    to_root="true">
+  </LabelSet>
+
+</label>

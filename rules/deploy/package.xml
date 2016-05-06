@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<deploy version="1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://scmwww/www_scc/schemas/deployconfig.xsd">
+
+
+  <depends platform="Linux|Win"/>
+
+ <!-- Default configurations needed for packaging -->
+ 
+  <property product="$ENV{SSMS_BLD_PRODUCT}"/>
+  <property version="$ENV{SSMS_BLD_VERSION}"/>
+  <property bldtype="$ENV{SSMS_BLD_TYPE}"/>
+  <property fromdir="$ENV{SSMS_PROJECT_ROOT}"/>
+  <property flavor=""/>
+
+  <platform name="Linux">
+    <property sep=";"/>
+    <property slash="/" />
+    <property rename="mv" />
+    <property mkdir_opt="-p"/>
+    <property pkgtype="tar"/>
+    <!-- default location for package deployment in development -->
+    <property pkgdir="/wwl/$ENV{USER}/packages/${product}_${version}" ahp="true"/>
+    <property TargetRoot="$ENV{SSMS_PROJECT_ROOT}/export/build/${SSMS_BLD_BUILDNAME}/pkg"/>
+    <condition flavor="">
+      <property pkgflavor="no-flavor"/>
+    </condition>
+    <!-- default values for integration in ES-TEM -->
+    <condition USER="TSCM">
+      <!-- remap integration builds for compatibility -->
+      <condition bldtype="integration">
+        <property bldtype="RELEASE" />
+      </condition>
+      <condition bldtype="RELEASE">
+      	<!-- path needs to be adjusted here !!!!!!!!!!!!!!! -->
+        <property pkgdir="$ENV{SSMS_BLD_DEPLOY_ROOT}/${product}_${version}"/>
+      </condition>
+      <condition bldtype="CI|TEAM$|TEAM_IB">
+        <property pkgdir="/dat/sbu_gbi/TSD/Kits/${product}/${bldtype}/${product}_${version}"/>
+      </condition>
+    </condition>
+    <!-- used only when packages should be uploaded in Bamboo directly -->
+    <!-- condition name="bamboo_build_working_directory" BAMBOO="true" kind="environment">
+      	<property pkgdir="$ENV{SSMS_PROJECT_ROOT}/export/build/packages"/>
+    </condition-->
+  </platform>
+
+  <platform name="Win">
+    <property sep="&amp;&amp;"/>
+    <property slash="\" />
+    <property rename="move" />
+    <!-- default location for package deployment in development -->
+    <property pkgdir="c:\develop\packages\${product}_${version}" ahp="true"/>
+    <!-- postfix for filename -->
+    <property tmpPostfix="-${version}"/>
+    <property TargetRoot="$ENV{SSMS_PROJECT_ROOT}\export\build\${SSMS_BLD_BUILDNAME}\pkg"/>
+    <property mkdir_opt=""/>
+    <!-- default values for integration in ES-TEM -->
+    <condition USER="TSCM">
+      <!-- remap integration builds for compatibility -->
+      <condition bldtype="integration">
+        <property bldtype="RELEASE" />
+      </condition>
+      <condition bldtype="RELEASE">
+      	<!-- path needs to be adjusted here !!!!!!!!!!!!!! -->
+        <property pkgdir="$ENV{SSMS_BLD_DEPLOY_ROOT}\${product}_${version}" ahp="true"/>
+      </condition>
+      <condition bldtype="CI|TEAM$|TEAM_IB">
+        <property pkgdir="\\ex\dfs\SPU\GBI\TSD\kits\${product}\${bldtype}\${product}_${version}" ahp="true"/>
+      </condition>
+      
+    </condition>
+    <!-- used only when packages should be uploaded in Bamboo directly -->
+    <!-- condition name="bamboo_build_working_directory" BAMBOO="true" kind="environment">
+      	<property pkgdir="$ENV{SSMS_PROJECT_ROOT}\export\build\packages"/>
+    </condition-->
+  </platform>
+
+ <!-- end of default configuration -->
+
+<!-- below definitions needs to be completely adjusted !!!!!!!!!!!!!!!!! -->
+  <platform name="Linux">
+    <!--  ==============  -->
+    <!--  Server Kit  Example    -->
+    <!--  ==============  -->
+    <!--echo message="+++ Creating Server Kit ..."/>
+
+    <property instkitroot="$ENV{SSMS_PROJECT_ROOT}${slash}export${slash}build${slash}${SSMS_BLD_BUILDNAME}${slash}install${slash}server"/>
+    <property configuration=""/>
+    <property pkgtype="zip"/>
+    <property packagefile = "${product}_Server_${version}.zip"/>
+
+    <Install name="install_server" kitroot="${instkitroot}" kitdir="${pkgdir}" cmd = "install_script">
+      <script platform="Linux" name="install_script" logpath="${slash}export${slash}var${slash}logs${slash}">
+        <step command = "set DirServer=${slash}export${slash}wwl${slash}ssms-tst6"/>
+        <step command = "mkdir ${mkdir_opt} $DirServer"/>
+        <step command = "unzip -o ${packagefile} -d $DirServer"/>
+        <step command = "cd $DirServer"/>
+        <step command = "java -cp ssmstst6-hello-world.jar com.six.ssx.ssms_tst6.AppHelloWorld"/>
+        <step command = "ls -l $DirServer"/>
+      </script>
+      <use package="${product}_Server_${version}"/>
+      <use package="${product}_${version}"/>
+    </Install>
+
+    <Package name="${product}_Server_${version}"
+      packagefile="${product}_Server_${version}.zip"
+      description="SSMS-TST6 Server"
+      flavor="${flavor}"
+      version="${version}"
+      pkgtype="${pkgtype}"
+      deploydir="${pkgdir}"
+      rmode="644"
+      targetroot="${TargetRoot}">
+      <copy todir=".">
+        <fileset dir="${fromdir}/source/ssms-tst6/ssms-tst6-hello-world/target">
+          <include name="^ssmstst6-hello-world.jar$"/>
+          <include name="^ssms-tst6-hello-world-${version}-sources.jar$"/>
+        </fileset>
+      </copy>
+    </Package-->
+  </platform>
+
+
+  <platform name="Linux|Win">
+    <!--  ==============  -->
+    <!--  Client Kit example     -->
+    <!--  ==============  -->
+    <!--echo message="+++ Creating Client Kit ..."/>
+
+    <property instkitroot="$ENV{SSMS_PROJECT_ROOT}${slash}export${slash}build${slash}${SSMS_BLD_BUILDNAME}${slash}install${slash}client"/>
+    <property configuration="x86${slash}DebugX86"/>
+    <property pkgtype="zip"/>
+    <property pkg_sources="${fromdir}${slash}source${slash}TestTool${slash}dotNet${slash}TATAdapter${slash}source${slash}Test"/>
+    <property packagefile = "${product}_Client_${version}.zip"/>
+
+    <Install name="install_client" kitroot="${instkitroot}" kitdir="${pkgdir}" cmd = "install_script">
+      <script platform="Win" name="install_script" logpath="%TEMP%">
+        <step command = "set DirClient=C:\develop\ssms-tst6"/>
+        <step command = "IF NOT EXIST %DirClient% mkdir %mkdir_opt% %DirClient%"/>
+        <step command = "unzip -o ${packagefile} %DirClient%"/>
+        <step command = "cd %DirClient%"/>
+        <step command = "java -cp ssmstst6-hello-world.jar com.six.ssx.ssms_tst6.AppHelloWorld"/>
+        <step command = "dir %DirClient%"/>
+      </script>
+      <use package="${product}_${version}"/>
+    </Install>
+
+    <Package name="${product}_${version}"
+      packagefile="${product}_Client_${version}.zip"
+      description="SSMS-TST6 Client"
+      flavor="${flavor}"
+      version="${version}"
+      pkgtype="${pkgtype}"
+      deploydir="${pkgdir}"
+      rmode="644"
+      targetroot="${TargetRoot}">
+      <copy todir=".">
+        <fileset dir="${fromdir}/source/ssms-tst6/ssms-tst6-hello-world/target">
+          <include name="^ssmstst6-hello-world.jar$"/>
+          <include name="^ssms-tst6-hello-world-${version}-sources.jar$"/>
+        </fileset>
+      </copy>
+    </Package-->
+  </platform>
+
+  <echo message="Nothing to package"/>
+  <!--echo message="+++ package location: ${pkgdir}"/-->
+</deploy>
