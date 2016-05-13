@@ -11,7 +11,7 @@ public class Server {
     public static void main(String[] args) throws Exception{
 
         //create socket
-        int port = 8123;
+        int port = 8122;
         ServerSocket serverSocket = new ServerSocket(port);
         System.err.println("Started Server on port " + port);
 
