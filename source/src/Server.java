@@ -26,6 +26,10 @@ public class Server {
             BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             PrintWriter out = new PrintWriter(clientSocket.getOutputStream());
 
+            String inputLine;
+            while ((inputLine = in.readLine())!= null){
+                out.println(inputLine);
+            }
 
             /*Close the connection and streams
             System.err.println("Closing connection");
