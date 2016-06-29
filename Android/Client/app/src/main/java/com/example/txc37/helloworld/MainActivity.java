@@ -2,7 +2,7 @@ package com.example.txc37.helloworld;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
+
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -106,6 +106,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
             writer.write(code);
             System.out.println("Your code was: " +code);
+
+             
 
 
 

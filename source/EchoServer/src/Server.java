@@ -24,19 +24,23 @@ public class Server {
             System.err.println("Accepted connection from client");
 
             //Open up input stream and read the message from the client
-
-
             BufferedReader buffReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             PrintWriter writer = new PrintWriter(clientSocket.getOutputStream());
 
             try {
                 while ((msg = buffReader.readLine()) != null){
                     System.out.println("Message from mobile phone: " + msg);
+                    String code = msg;
+                    String lastChar = code.substring(code.length()-1);
+                    System.out.println("last character is: "+ lastChar);
 
-                    String string = args[0];
-                    System.out.println("last character is: "+ string.substring(string.length() -1));
 
-                }
+
+
+                    }
+
+
+
 
             }catch (IOException e){
                 e.printStackTrace();
