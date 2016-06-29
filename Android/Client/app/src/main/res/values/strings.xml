@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Gewinnspiel</string>
+
+    <string name="conn_text">Successfully connected to Server!</string>
+
+    <string name="title_activity_start">StartActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <string name="title_activity_show_message">ShowMessageActivity</string>
+
+    <string name="title_activity_transition">TransitionActivity</string>
+</resources>

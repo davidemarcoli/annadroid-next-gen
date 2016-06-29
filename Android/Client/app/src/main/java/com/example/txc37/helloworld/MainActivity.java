@@ -11,18 +11,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Random;
 
 public class MainActivity extends Activity implements View.OnClickListener {
 
     public static final String MESSAGE = "com.example.txc37.helloworld.message";
-    //set the time the splash screen is displayed
-    private final int SPLASH_DISPLAY_LENGTH = 5000;
+
 
 
 
@@ -34,17 +35,32 @@ public class MainActivity extends Activity implements View.OnClickListener {
         Button submit_btn = (Button) findViewById(R.id.submit_btn);
         submit_btn.setOnClickListener(this);
 
+        String code = generateCode();
+
+        TextView codeView = (TextView) findViewById(R.id.code);
+        codeView.setText(code);
+
+
 
 
 
     }
 
-    public String getMessage(){
+    public String generateCode(){
+        int randCode = (int)(Math.random()*9000)+1000;
+        String codeString = String.valueOf(randCode);
+        return codeString;
 
-        EditText message = (EditText) findViewById(R.id.message);
+    }
 
-        String msg = message.getText().toString();
-        return msg;
+
+
+    public String getCode(){
+
+        TextView codeView = (TextView) findViewById(R.id.code);
+
+        String code = codeView.getText().toString();
+        return code;
 
 
 
@@ -59,8 +75,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         Intent intent = new Intent(this, ShowMessageActivity.class);
 
-        EditText editText = (EditText) findViewById(R.id.message);
-        String message = editText.getText().toString();
+        TextView textView = (TextView) findViewById(R.id.code);
+        String message = textView.getText().toString();
         intent.putExtra(MESSAGE, message);
 
         this.startActivity(intent);
@@ -86,10 +102,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
             PrintWriter writer = new PrintWriter(socket.getOutputStream());
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-            String message = getMessage();
+            String code = getCode();
 
-            writer.write(message);
-            System.out.println("The message you sent was: " +message);
+            writer.write(code);
+            System.out.println("Your code was: " +code);
 
 
 
