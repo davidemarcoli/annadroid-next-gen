@@ -1,4 +1,4 @@
-package com.example.txc37.helloworld;
+package com.example.txc37.client;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

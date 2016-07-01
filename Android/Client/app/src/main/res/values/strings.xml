@@ -10,4 +10,6 @@
     <string name="title_activity_show_message">ShowMessageActivity</string>
 
     <string name="title_activity_transition">TransitionActivity</string>
+
+    <string name="title_activity_lose">LoseActivity</string>
 </resources>

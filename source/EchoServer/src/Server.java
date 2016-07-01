@@ -3,60 +3,86 @@ import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class Server {
 
+    private static Socket socket;
 
     public static void main(String[] args) throws Exception {
 
-        //create socket
-        int port = 8123;
+
+
 
         String msg;
 
+        //define a set that contains the winning numbers
+        Set<String> win = new HashSet<>();
+        win.add("2");
+        win.add("4");
+        win.add("6");
+        win.add("8");
 
         try {
+            //define the port number for the server
+            int port = 8123;
+
+            //Initialise a new connection on the port
             ServerSocket serverSocket = new ServerSocket(port);
-            System.err.println("Started Server on port " + port);
-            //"blocking" call that waits until a connection is requested
-            Socket clientSocket = serverSocket.accept();
-            System.err.println("Accepted connection from client");
+            System.out.println("Server started and listening on port " +port);
 
-            //Open up input stream and read the message from the client
-            BufferedReader buffReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            PrintWriter writer = new PrintWriter(clientSocket.getOutputStream());
-
-            try {
-                while ((msg = buffReader.readLine()) != null){
-                    System.out.println("Message from mobile phone: " + msg);
-                    String code = msg;
-                    String lastChar = code.substring(code.length()-1);
-                    System.out.println("last character is: "+ lastChar);
-
+            //Keep the server running with a while loop
+            while (true){
+                //reading the message from the client
+                //let the socket accept connections
+                socket = serverSocket.accept();
+                //open up an input stream
+                InputStream inStream = socket.getInputStream();
+                //initialise an input stream reader
+               InputStreamReader inReader = new InputStreamReader(inStream);
+                BufferedReader buffReader = new BufferedReader(inReader);
+                //Variable for the message from client
+                String code = buffReader.readLine();
 
 
-
-                    }
+                    System.out.println("Message from client: " +code);
 
 
 
+                String lastChar = code.substring(code.length()-1);
 
-            }catch (IOException e){
-                e.printStackTrace();
+                OutputStream outStream = socket.getOutputStream();
+                OutputStreamWriter outWriter = new OutputStreamWriter(outStream);
+                BufferedWriter bw = new BufferedWriter(outWriter);
+
+                if (win.contains(lastChar)){
+                    bw.write("Winner");
+                    System.out.println("Winner");
+                }else {
+                    bw.write("Loser");
+                    System.out.println("Loser");
+                }
+                bw.flush();
+
             }
 
 
-
-            System.out.println("Closing connection");
-            buffReader.close();
-            writer.flush();
-            writer.close();
-            clientSocket.close();
-
-        } catch (IOException e) {
+        }catch (Exception e){
             e.printStackTrace();
         }
+        finally {
+            socket.close();
+            System.out.println("Connection closed");
+        }
+
+
+
+        }
+
+
+
 
 
     }
@@ -64,7 +90,7 @@ public class Server {
 
 
 
-}
+
 
 
 

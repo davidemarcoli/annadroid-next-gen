@@ -1,4 +1,4 @@
-package com.example.txc37.helloworld;
+package com.example.txc37.client;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
@@ -9,18 +9,18 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 
-import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.Socket;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class StartUpActivity extends Activity {
-
-    //set the time the splash screen is displayed
-    private final int SPLASH_DISPLAY_LENGTH = 5000;
+public class ShowMessageActivity extends Activity {
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -95,24 +95,17 @@ public class StartUpActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_start);
+        setContentView(R.layout.activity_show_message);
 
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
-        mContentView = findViewById(R.id.progress_view);
+        mContentView = findViewById(R.id.fullscreen_content);
 
+        Intent intent = getIntent();
+        String message = intent.getStringExtra(MainActivity.CODE);
 
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                /*Create an Intent to start the next activity*/
-                Intent intent = new Intent(StartUpActivity.this, MainActivity.class);
-                StartUpActivity.this.startActivity(intent);
-                StartUpActivity.this.finish();
-
-            }
-        }, SPLASH_DISPLAY_LENGTH);
+        TextView textView = (TextView) findViewById(R.id.display_message);
+        textView.setText(message);
 
 
 
@@ -128,8 +121,12 @@ public class StartUpActivity extends Activity {
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
-        //findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
+        findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
+
+        new ReceiveMessage().execute();
     }
+
+
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -184,6 +181,38 @@ public class StartUpActivity extends Activity {
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
 
+    protected class ReceiveMessage extends AsyncTask<String,Void,String>{
 
+
+        @Override
+        protected String doInBackground(String... params) {
+
+
+            //Variable for the port number
+            int port = 8123;
+            //IP we wanna connect to
+            String ip =   "192.168.56.1";
+            //initialise the socket
+            Socket clientSocket;
+
+            try {
+
+                clientSocket = new Socket(ip, port);
+
+
+                //Get the return message from the server
+                InputStream is = clientSocket.getInputStream();
+                InputStreamReader isr = new InputStreamReader(is);
+                BufferedReader br = new BufferedReader(isr);
+                String message = br.readLine();
+                System.out.println("Message received from the server : " +message);
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+    }
 
 }
