@@ -57,24 +57,27 @@ public class Server {
                 OutputStreamWriter outWriter = new OutputStreamWriter(outStream);
                 BufferedWriter bw = new BufferedWriter(outWriter);
 
+            try {
                 if (win.contains(lastChar)){
-                    bw.write("Winner");
+                    bw.write("1");
                     System.out.println("Winner");
                 }else {
-                    bw.write("Loser");
+                    bw.write("2");
                     System.out.println("Loser");
                 }
+
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+
                 bw.flush();
+                socket.close();
 
             }
 
 
         }catch (Exception e){
             e.printStackTrace();
-        }
-        finally {
-            socket.close();
-            System.out.println("Connection closed");
         }
 
 

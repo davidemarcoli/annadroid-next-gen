@@ -123,7 +123,7 @@ public class ShowMessageActivity extends Activity {
         // while interacting with the UI.
         findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
 
-        new ReceiveMessage().execute();
+
     }
 
 
@@ -181,38 +181,6 @@ public class ShowMessageActivity extends Activity {
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
 
-    protected class ReceiveMessage extends AsyncTask<String,Void,String>{
 
-
-        @Override
-        protected String doInBackground(String... params) {
-
-
-            //Variable for the port number
-            int port = 8123;
-            //IP we wanna connect to
-            String ip =   "192.168.56.1";
-            //initialise the socket
-            Socket clientSocket;
-
-            try {
-
-                clientSocket = new Socket(ip, port);
-
-
-                //Get the return message from the server
-                InputStream is = clientSocket.getInputStream();
-                InputStreamReader isr = new InputStreamReader(is);
-                BufferedReader br = new BufferedReader(isr);
-                String message = br.readLine();
-                System.out.println("Message received from the server : " +message);
-
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-    }
 
 }
