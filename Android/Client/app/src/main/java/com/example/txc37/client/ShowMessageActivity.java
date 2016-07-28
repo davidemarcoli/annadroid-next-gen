@@ -3,10 +3,14 @@ package com.example.txc37.client;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
@@ -21,6 +25,8 @@ import java.net.Socket;
  * status bar and navigation/system bar) with user interaction.
  */
 public class ShowMessageActivity extends Activity {
+
+
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -110,6 +116,8 @@ public class ShowMessageActivity extends Activity {
 
 
 
+
+
         // Set up the user interaction to manually show or hide the system UI.
         mContentView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,6 +133,8 @@ public class ShowMessageActivity extends Activity {
 
 
     }
+
+
 
 
 

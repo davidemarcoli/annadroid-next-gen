@@ -5,19 +5,15 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.text.Layout;
 import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.net.InetAddress;
-import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
+
+import static com.example.txc37.client.CodeHelper.getCode;
 
 /**
  * Created by txc37 on 18.07.2016.
@@ -26,96 +22,77 @@ public class ConnectionService extends Service {
 
     public static final String SERVERIP = "192.168.56.1";
     public static final int PORTNUMBER = 8123;
-    InetAddress serverAddr;
-    PrintWriter out;
     Socket socket;
-
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-
-        System.out.println("I am the on bind method");
-        return myBinder;
-    }
-
-    private final IBinder myBinder = new LocalBinder();
-    MainActivity mMainActivity = new MainActivity();
-
-    public class LocalBinder extends Binder{
-        public ConnectionService getService(){
-            System.out.println("I am the local Binder");
-            return ConnectionService.this;
-        }
-    }
+    Binder myBinder;
 
     @Override
     public void onCreate(){
         super.onCreate();
+
+      Thread  backgroundThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //do the work in a seperate thread so the main thread does
+                //not get bogged down
+                Log.i("Thread:" ,"Thread running");
+                try {
+                    connectSocket();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        });
+        backgroundThread.start();
     }
 
-    public void sendMessage(String message){
-
-        if (out != null && !out.checkError()){
-            System.out.println("Sending message " +message);
-            out.write(message);
-            out.flush();
-
-        }
-
-
-
-    }
-
+    //called when the service starts from a call to startService()
     @Override
     public int onStartCommand(Intent intent, int flags, int startID){
-        super.onStartCommand(intent,flags,startID);
-        System.out.println("I am the on start method");
-
-        Runnable connect = new ConnectSocket();
-        new Thread(connect).start();
+        Log.i("Service: " , "Service Started by StartService()");
         return START_STICKY;
-
     }
 
-    class ConnectSocket implements Runnable{
 
-        @Override
-        public void run(){
-
-
-            try {
-                serverAddr = InetAddress.getByName(SERVERIP);
-                Log.e("TCP Client", "Connecting to Server");
-
-                socket = new Socket(serverAddr, PORTNUMBER);
-
-                out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
-
-                Log.e("TCP Client", "Sent");
-                Log.e("TCP Client", "Done");
-
-
-            }catch(Exception e){
-                e.printStackTrace();
-        }
-        }
-
-    }
-
+    @Nullable
     @Override
-    public void onDestroy(){
-        super.onDestroy();
-        try {
-            socket.close();
-            Log.e("Connection: ","Closed!");
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        socket = null;
+    public IBinder onBind(Intent intent) {
+       Log.i("Binder: ", "onBind called..." );
+        return myBinder;
+    }
+
+    public class MyLocalBinder extends Binder{
+
+            ConnectionService getService(){
+                return ConnectionService.this;
+            }
     }
 
 
+
+    public void connectSocket() throws IOException {
+
+        socket = new Socket(SERVERIP,PORTNUMBER);
+        Log.i("Connection: ", "Connection established");
+
+        OutputStream outStream = socket.getOutputStream();
+        OutputStreamWriter outWriter = new OutputStreamWriter(outStream);
+        BufferedWriter buffWriter = new BufferedWriter(outWriter);
+
+        String message = getCode();
+
+        buffWriter.write(message);
+        buffWriter.flush();
+        buffWriter.close();
+
+
     }
+
+
+
+
+}
 
 
 

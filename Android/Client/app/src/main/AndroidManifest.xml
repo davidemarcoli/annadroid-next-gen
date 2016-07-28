@@ -9,6 +9,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <service android:name=".ConnectionService"/>
+
         <activity
             android:name=".StartUpActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"

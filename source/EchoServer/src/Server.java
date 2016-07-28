@@ -38,6 +38,8 @@ public class Server {
                 //reading the message from the client
                 //let the socket accept connections
                 socket = serverSocket.accept();
+
+                System.out.println("Accepted connection");
                 //open up an input stream
                 InputStream inStream = socket.getInputStream();
                 //initialise an input stream reader
