@@ -1,5 +1,3 @@
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
-
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -14,7 +12,8 @@ public class Server {
     public static void main(String[] args) throws Exception {
 
 
-
+        String code = RandNumbGen.generateCode();
+        System.out.println(code);
 
         String msg;
 
@@ -35,21 +34,20 @@ public class Server {
 
             //Keep the server running with a while loop
             while (true){
-                //reading the message from the client
-                //let the socket accept connections
+                //reading the message from the client                //let the socket accept connections
                 socket = serverSocket.accept();
 
                 System.out.println("Accepted connection");
                 //open up an input stream
                 InputStream inStream = socket.getInputStream();
                 //initialise an input stream reader
-               InputStreamReader inReader = new InputStreamReader(inStream);
+                InputStreamReader inReader = new InputStreamReader(inStream);
                 BufferedReader buffReader = new BufferedReader(inReader);
                 //Variable for the message from client
-                String code = buffReader.readLine();
+                //String code = buffReader.readLine();
 
 
-                    System.out.println("Message from client: " +code);
+                System.out.println("Message from client: " +code);
 
 
 
@@ -59,18 +57,18 @@ public class Server {
                 OutputStreamWriter outWriter = new OutputStreamWriter(outStream);
                 BufferedWriter bw = new BufferedWriter(outWriter);
 
-            try {
-                if (win.contains(lastChar)){
-                    bw.write("1");
-                    System.out.println("Winner");
-                }else {
-                    bw.write("2");
-                    System.out.println("Loser");
-                }
+                try {
+                    if (win.contains(lastChar)){
+                        bw.write("1");
+                        System.out.println("Winner");
+                    }else {
+                        bw.write("2");
+                        System.out.println("Loser");
+                    }
 
-            }catch (IOException e){
-                e.printStackTrace();
-            }
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
 
                 bw.flush();
                 socket.close();
@@ -84,13 +82,13 @@ public class Server {
 
 
 
-        }
-
-
-
-
-
     }
+
+
+
+
+
+}
 
 
 
