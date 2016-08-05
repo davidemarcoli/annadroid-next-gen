@@ -55,13 +55,16 @@ public class Server {
             if (win.contains(lastChar)) {
                 bw.write("1");
                 System.out.println("Winner");
+
             } else {
                 bw.write("2");
                 System.out.println("Loser");
+
             }
 
 
-
+        bw.flush();
+        bw.close();
 
     }
 

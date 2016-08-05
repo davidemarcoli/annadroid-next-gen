@@ -1,6 +1,4 @@
-package com.example.txc37.client;
-
-import android.view.View;
+package com.six.achrist.client;
 
 /**
  * Created by annatina on 27/07/2016.

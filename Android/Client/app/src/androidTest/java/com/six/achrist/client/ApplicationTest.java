@@ -1,4 +1,4 @@
-package com.example.txc37.client;
+package com.six.achrist.client;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

@@ -1,4 +1,4 @@
-package com.example.txc37.client;
+package com.six.achrist.client;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;

@@ -1,33 +1,29 @@
-package com.example.txc37.client;
+package com.six.achrist.client;
 import android.app.Activity;
-import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.nfc.Tag;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.Socket;
-import java.util.HashSet;
-import java.util.Set;
-
-import static com.example.txc37.client.CodeHelper.getCode;
 
 public class MainActivity extends Activity implements View.OnClickListener {
 
-    public static final String CODE = "com.example.txc37.client.code";
+
     ConnectionService cService;
+
     public boolean isBound;
+
+
 
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
@@ -60,13 +56,16 @@ public class MainActivity extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button submit_btn = (Button) findViewById(R.id.submit_btn);
-        submit_btn.setOnClickListener(this);
 
-        String code = getCode();
 
-        TextView codeView = (TextView) findViewById(R.id.code);
-        codeView.setText(code);
+        Intent intent = new Intent(this, ConnectionService.MyBroadcastReceiver.class);
+        String result = intent.getStringExtra("result");
+        TextView resultText = (TextView)findViewById(R.id.winTxt);
+        resultText.setText(result);
+
+        startService(new Intent(this,ConnectionService.class));
+
+        doBindService();
 
     }
 
@@ -76,6 +75,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         if(!isBound){
             Intent bindIntent = new Intent(this,ConnectionService.class);
             isBound = bindService(bindIntent,mConnection,Context.BIND_AUTO_CREATE);
+
 
         }
 
@@ -98,15 +98,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
 
 
-        //Set up an intent to start the next activity
-        Intent intent = new Intent(this, ShowMessageActivity.class);
-        String code = getCode();
-        intent.putExtra(CODE, code);
-        this.startActivity(intent);
-        startService(new Intent(this,ConnectionService.class));
-        doBindService();
-
-
 
     }
 
@@ -114,6 +105,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     public void onStart() {
         super.onStart();
         doBindService();
+
 
 
     }
@@ -124,6 +116,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
         doUnbindService();
 
 
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        
     }
 
 
