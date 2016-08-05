@@ -21,20 +21,64 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     ConnectionService cService;
 
-    public boolean isBound;
+    boolean isBound = false;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        if(isBound){
+            try {
+                String result = cService.getResult();
+                if (result.equals("1")){
+                    Log.i("Result", "Win");
+                }else {
+                    Log.i("Result", "Lose");
+                }
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+
+
+    }
+
+    @Override
+    protected void onStart(){
+        super.onStart();
+        //bind to local Service
+        Intent intent = new Intent(this,ConnectionService.class);
+        bindService(intent,mConnection,Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+        //Unbind from the service
+        if (isBound){
+            unbindService(mConnection);
+            isBound = false;
+        }
+    }
 
 
 
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
-        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+        public void onServiceConnected(ComponentName className, IBinder iBinder) {
 
            //called when the connection with the service has been established
             //gives the service object (cService) so we can interact with the
             //service that is explicitly bound to a service, that is running
             //in our own process.
             Log.i("Connection", "Bound service connected");
-           cService = ((ConnectionService.MyLocalBinder)iBinder).getService();
+            ConnectionService.LocalBinder binder = (ConnectionService.LocalBinder) iBinder;
+            cService = binder.getService();
+            isBound = true;
 
 
 
@@ -46,47 +90,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
             //called if the service stops unexpectedly or the process crashes
             Log.i("Connection", "Error: bound service disconnected");
-            cService = null;
+            isBound = false;
+
 
         }
     };
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-
-
-        Intent intent = new Intent(this, ConnectionService.MyBroadcastReceiver.class);
-        String result = intent.getStringExtra("result");
-        TextView resultText = (TextView)findViewById(R.id.winTxt);
-        resultText.setText(result);
-
-        startService(new Intent(this,ConnectionService.class));
-
-        doBindService();
-
-    }
-
-    //bind this activity to the service
-    public  void doBindService(){
-        Toast.makeText(this,"Binding...", Toast.LENGTH_SHORT).show();
-        if(!isBound){
-            Intent bindIntent = new Intent(this,ConnectionService.class);
-            isBound = bindService(bindIntent,mConnection,Context.BIND_AUTO_CREATE);
-
-
-        }
-
-    }
-
-    //unbind this activity from the service
-    public void doUnbindService(){
-        Toast.makeText(this, "Unbinding...",Toast.LENGTH_SHORT).show();
-        unbindService(mConnection);
-        isBound = false;
-    }
 
 
 
@@ -101,29 +110,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        doBindService();
-
-
-
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        doUnbindService();
-
-
-    }
-
-    @Override
-    public void onResume(){
-        super.onResume();
-
-        
-    }
 
 
 }

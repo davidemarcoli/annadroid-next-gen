@@ -14,6 +14,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 
 /**
@@ -24,130 +25,74 @@ public class ConnectionService extends Service {
 
     public static final String SERVERIP = "192.168.56.1";
     public static final int PORTNUMBER = 8123;
-    private static String result = null;
+    private final IBinder mBinder = new LocalBinder();
     Socket socket;
-    Binder myBinder;
 
+    /**
+     * Class used for the client Binder.  Because we know this service always
+     * runs in the same process as its clients, we don't need to deal with IPC.
+     */
 
-
-
+    public class LocalBinder extends Binder{
+        ConnectionService getService(){
+            // Return this instance of LocalService so clients can call public methods
+            return ConnectionService.this;
+        }
+    }
 
     @Override
     public void onCreate(){
         super.onCreate();
-
         Thread  backgroundThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 //do the work in a seperate thread so the main thread does
                 //not get bogged down
-                Log.i("Thread " ,"Thread running");
+                Log.i("Thread:" ,"Thread running");
                 try {
-
-                    connectSocket();
-                    receiveResult();
-
-
+                    socketConnect();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
 
+
             }
         });
         backgroundThread.start();
-
-
     }
 
-    //called when the service starts from a call to startService()
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startID){
-        Log.i("Service " , "Service Started by StartService()");
-        return START_STICKY;
-    }
 
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        Log.i("Binder ", "onBind called..." );
-        return myBinder;
+        return mBinder;
     }
 
-    public class MyLocalBinder extends Binder{
-
-        ConnectionService getService(){
-            return ConnectionService.this;
-        }
-    }
-
-
-
-    public void connectSocket() throws IOException {
-
+    public void socketConnect() throws IOException {
         socket = new Socket(SERVERIP,PORTNUMBER);
         Log.i("Connection ", "Connection established");
 
     }
 
+    public String getResult() throws IOException {
 
-    public String receiveResult() throws IOException {
 
-        //open an input stream
         InputStream inStream = socket.getInputStream();
-        //make a new input stream reader
-        InputStreamReader inStreamReader = new InputStreamReader(inStream);
-        //New Buffered Reader
-        BufferedReader buffReader = new BufferedReader(inStreamReader);
+        InputStreamReader inReader = new InputStreamReader(inStream);
+        BufferedReader buffReader = new BufferedReader(inReader);
 
-        String srvMsg;
+        String result;
 
-        srvMsg = buffReader.readLine();
+        result = buffReader.readLine();
 
-
-        if (srvMsg.equals("1")){
-            Log.i("Result" ,"Win");
-
-        }else {
-            Log.i("Result" , "Lose");
-
-
-        }
-
-        return srvMsg;
-    }
-
-    public  String getResult() throws IOException {
-        if (result == null){
-            result = receiveResult();
-
-        }
         return result;
+
+
+
+
+
     }
-
-
-    public class MyBroadcastReceiver extends BroadcastReceiver{
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            try {
-                String result = getResult();
-                if (result.equals("1")){
-                    intent.putExtra("result","Win");
-
-                }else {
-                    intent.putExtra("result", "Lose");
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            sendBroadcast(intent);
-
-        }
-    }
-
 }
 
 
