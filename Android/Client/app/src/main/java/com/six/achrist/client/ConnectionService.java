@@ -40,26 +40,7 @@ public class ConnectionService extends Service {
         }
     }
 
-    @Override
-    public void onCreate(){
-        super.onCreate();
-        Thread  backgroundThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                //do the work in a seperate thread so the main thread does
-                //not get bogged down
-                Log.i("Thread:" ,"Thread running");
-                try {
-                    socketConnect();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
 
-
-            }
-        });
-        backgroundThread.start();
-    }
 
 
 
@@ -69,24 +50,36 @@ public class ConnectionService extends Service {
         return mBinder;
     }
 
-    public void socketConnect() throws IOException {
-        socket = new Socket(SERVERIP,PORTNUMBER);
-        Log.i("Connection ", "Connection established");
 
-    }
 
     public String getResult() throws IOException {
+        socket = new Socket(SERVERIP,PORTNUMBER);
+        Log.i("Connection ", "Connection established");
 
 
         InputStream inStream = socket.getInputStream();
         InputStreamReader inReader = new InputStreamReader(inStream);
         BufferedReader buffReader = new BufferedReader(inReader);
 
-        String result;
+        String srvMsg;
+        String result = null;
 
-        result = buffReader.readLine();
+        while ((srvMsg = buffReader.readLine())!= null){
+            Log.i("Result",srvMsg);
+            result = srvMsg;
+            if (result.equals("1")){
+                result = "You win";
+            }else {
+                result = "You lose";
+            }
+
+
+        }
 
         return result;
+
+
+
 
 
 

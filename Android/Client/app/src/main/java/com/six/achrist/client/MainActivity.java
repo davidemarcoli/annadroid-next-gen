@@ -1,18 +1,16 @@
 package com.six.achrist.client;
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.IOException;
 
@@ -22,26 +20,36 @@ public class MainActivity extends Activity implements View.OnClickListener {
     ConnectionService cService;
 
     boolean isBound = false;
+    private TextView resultText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Button showMe = (Button)findViewById(R.id.show_result);
+        showMe.setOnClickListener(this);
+
+        resultText = (TextView)findViewById(R.id.winTxt);
+    }
+
+    @Override
+    public void onClick(View v) {
+
         if(isBound){
-            try {
-                String result = cService.getResult();
-                if (result.equals("1")){
-                    Log.i("Result", "Win");
-                }else {
-                    Log.i("Result", "Lose");
-                }
-
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
+            getResult();
+        }else {
+            Log.i("Error", "No Service Connected");
         }
+
+
+
+
+    }
+
+    public void getResult(){
+
+        new ResultTask().execute();
 
 
 
@@ -102,11 +110,25 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
 
 
-    @Override
-    public void onClick(View v) {
 
 
+    public class ResultTask extends AsyncTask<String,Void,String> {
 
+        @Override
+        protected String doInBackground(String... strings) {
+            try {
+                return cService.getResult();
+            } catch (IOException e) {
+                e.printStackTrace();
+                return "Oops, something went tits-up";
+            }
+
+        }
+
+        protected void onPostExecute(String result){
+            resultText.setText(result);
+
+        }
 
     }
 
