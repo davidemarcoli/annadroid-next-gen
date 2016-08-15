@@ -4,16 +4,20 @@ import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
 public class StartUpActivity extends Activity {
+
+    private int mProgress = 0;
 
     //set the time the splash screen is displayed
     private final int SPLASH_DISPLAY_LENGTH = 5000;
@@ -97,6 +101,11 @@ public class StartUpActivity extends Activity {
         mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = findViewById(R.id.progress_view);
 
+        TextView startText = (TextView)findViewById(R.id.start_text);
+
+       Typeface custom_font = Typeface.createFromAsset(getAssets(),"fonts/athletic.ttf");
+        startText.setTypeface(custom_font);
+
 
 
         new Handler().postDelayed(new Runnable() {
@@ -179,7 +188,6 @@ public class StartUpActivity extends Activity {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
-
 
 
 }

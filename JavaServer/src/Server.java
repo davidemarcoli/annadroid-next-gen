@@ -33,23 +33,23 @@ public class Server {
         ServerSocket serverSocket = new ServerSocket(port);
         System.out.println("Server started on port " +port );
 
-        socket = serverSocket.accept();
+            socket = serverSocket.accept();
 
-        System.out.println("Accepted connection");
+            System.out.println("Accepted connection");
 
-        //Variable for the message from client
+            //Variable for the message from client
 
-        String code = RandNumbGen.getCode();
-
-
-        System.out.println("the code was:  " + code);
+            String code = RandNumbGen.getCode();
 
 
-        String lastChar = code.substring(code.length() - 1);
+            System.out.println("the code was:  " + code);
 
-        OutputStream outStream = socket.getOutputStream();
-        OutputStreamWriter outWriter = new OutputStreamWriter(outStream);
-        BufferedWriter bw = new BufferedWriter(outWriter);
+
+            String lastChar = code.substring(code.length() - 1);
+
+            OutputStream outStream = socket.getOutputStream();
+            OutputStreamWriter outWriter = new OutputStreamWriter(outStream);
+            BufferedWriter bw = new BufferedWriter(outWriter);
 
 
             if (win.contains(lastChar)) {
@@ -62,16 +62,12 @@ public class Server {
 
             }
 
-
         bw.flush();
-        bw.close();
+        serverSocket.close();
+
+
 
     }
-
-
-
-
-
 
 }
 

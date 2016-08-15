@@ -67,16 +67,21 @@ public class ConnectionService extends Service {
         while ((srvMsg = buffReader.readLine())!= null){
             Log.i("Result",srvMsg);
             result = srvMsg;
+
             if (result.equals("1")){
-                result = "You win";
+                result = "Congratulations, You win!";
             }else {
-                result = "You lose";
+                result = "Better luck next time!";
+
+
             }
 
 
         }
 
+        buffReader.close();
         return result;
+
 
 
 

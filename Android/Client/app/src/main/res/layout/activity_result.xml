@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:background="#80CBC4"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.six.achrist.client.ResultActivity">
+    <android.support.v7.widget.CardView
+        android:id="@+id/card1"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        card_view:cardBackgroundColor="#4DB6AC">
+        <TextView
+            android:id="@+id/result_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textStyle="bold"
+            android:background="#4DB6AC"
+            android:textColor="#000000"
+            android:gravity="center"
+            android:textSize="40sp"/>
+        <Button
+            android:id="@+id/try_again"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+
+            android:text="Try Again?"
+            android:background="@color/colorPrimary"
+            style="@android:style/Widget.Holo.Button.Borderless"/>
+
+    </android.support.v7.widget.CardView>
+
+
+
+
+</LinearLayout>

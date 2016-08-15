@@ -3,6 +3,12 @@
 
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
-    <string name="welcome_text">WELCOME!</string>
-    <string name="show_me_button">Show me</string>
+    <string name="welcome_text">TRY YOUR LUCK</string>
+    <string name="show_me_button">Try your luck</string>
+
+    <string name="title_activity_result">Your Result</string>
+    <string name="luck">Good Luck</string>
+
+    <string name="title_activity_main2">MainActivity2</string>
+
 </resources>
