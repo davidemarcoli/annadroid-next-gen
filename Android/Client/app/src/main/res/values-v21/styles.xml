@@ -6,5 +6,16 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+
+
+    </style>
+
+    <style name="CustomTheme" parent="android:Theme.Material" >
+        <item name="android:colorPrimary">@color/custom_orange_primary</item>
+        <item name="android:colorPrimaryDark">@color/custom_orange_primary_dark</item>
+        <item name="android:colorAccent">@color/custom_orange_accent</item>
+        <item name="android:colorBackground">@color/custom_orange_background</item>
+        <item name="android:textColorPrimary">@color/custom_orange_text</item>
     </style>
 </resources>

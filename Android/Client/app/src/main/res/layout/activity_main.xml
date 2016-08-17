@@ -3,35 +3,41 @@
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:layout_height="match_parent"
-    android:background="#0099cc"
+    android:id="@+id/layout_root"
+    android:background="@color/custom_orange_background"
     tools:context=".MainActivity">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
          TextureView, etc. -->
+    <LinearLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="20dp"
+        android:orientation="vertical"
+        android:background="#FFFFFF">
+            <Button
+                android:id="@+id/show_result"
+                android:layout_margin="50dp"
+                android:layout_width="200dp"
+                android:layout_gravity="bottom|center"
+                android:layout_height="wrap_content"
+                android:text="@string/show_me_button"
+                style="@style/Base.Widget.AppCompat.Button.Borderless"
+                />
 
-        <ImageView
-            android:id="@+id/luck"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:src="@drawable/luck"
-        android:layout_gravity="center"/>
 
-    <Button
-        android:id="@+id/show_result"
-        android:layout_margin="50dp"
-        android:layout_width="200dp"
-        android:layout_gravity="bottom|center"
-        android:layout_height="wrap_content"
-        android:text="@string/show_me_button"
-        android:background="@color/colorPrimary"
-        />
+    </LinearLayout>
+
+
+
 
     <!-- This FrameLayout insets its children based on system windows using
          android:fitsSystemWindows. -->
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="204dp"
         android:fitsSystemWindows="true">
 
         <LinearLayout
@@ -49,5 +55,7 @@
 
         </LinearLayout>
     </FrameLayout>
+
+
 
 </FrameLayout>
