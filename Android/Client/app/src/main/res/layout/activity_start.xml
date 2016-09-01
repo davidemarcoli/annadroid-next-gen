@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    style="@style/FullscreenTheme"
     tools:context=".StartUpActivity">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
@@ -9,9 +10,10 @@
          TextureView, etc. -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:gravity="center">
+        android:gravity="center"
+        android:background="#13a237">
     <TextView
         android:id="@+id/start_text"
         android:layout_marginTop="20dp"
@@ -20,17 +22,12 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textStyle="bold"
-        android:text="Gewinnspiel"
+        android:text="Good Luck"
         android:textColor="#000000"
+        android:background="#13a237"
         android:textSize="60sp"/>
 
-    <TextView
-        android:id="@+id/running_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="30sp"
-        android:text="Loading"
-        />
+
     <ProgressBar
         android:id="@+id/progress_view"
         android:layout_marginBottom="20dp"

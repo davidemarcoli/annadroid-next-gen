@@ -1,16 +1,16 @@
 <resources>
     <string name="app_name">Client</string>
 
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
-    <string name="welcome_text">TRY YOUR LUCK</string>
     <string name="show_me_button">Try your luck</string>
 
     <string name="title_activity_result">Your Result</string>
-    <string name="luck">Good Luck</string>
+
+    <string name="title_activity_main">Main Activity</string>
+    <string name="try_again">Try Again?</string>
 
     <string name="title_activity_main2">MainActivity2</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 
-    <string name="title_activity_result2">ResultActivity2</string>
 
 </resources>

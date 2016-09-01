@@ -103,7 +103,7 @@ public class StartUpActivity extends Activity {
 
         TextView startText = (TextView)findViewById(R.id.start_text);
 
-       Typeface custom_font = Typeface.createFromAsset(getAssets(),"fonts/athletic.ttf");
+       Typeface custom_font = Typeface.createFromAsset(getAssets(),"fonts/ringofkerry.otf");
         startText.setTypeface(custom_font);
 
 

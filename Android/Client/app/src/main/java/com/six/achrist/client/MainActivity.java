@@ -1,26 +1,22 @@
 package com.six.achrist.client;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.transition.Fade;
-import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
 import java.io.IOException;
 
@@ -30,16 +26,13 @@ import java.io.IOException;
  */
 public class MainActivity extends Activity implements View.OnClickListener {
 
+    //Variable for the Service Connection
     ConnectionService cService;
-
+    //Variable for the Binder
     boolean isBound = false;
 
-    private TextView result_text;
-
-    ViewGroup mRoot;
-
+    //Variable for the Button
     Button showMe;
-
 
     /**
      * Whether or not the system UI should be auto-hidden after
@@ -82,7 +75,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         @Override
         public void run() {
             // Delayed display of UI elements
-            ActionBar actionBar = getActionBar();
+            android.app.ActionBar actionBar = getActionBar();
             if (actionBar != null) {
                 actionBar.show();
             }
@@ -111,7 +104,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
     };
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,23 +112,51 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
-        mContentView = findViewById(R.id.content);
+        mContentView = findViewById(R.id.fullscreen_content);
 
-        mRoot = (ViewGroup)findViewById(R.id.layout_root);
-
-        showMe = (Button) findViewById(R.id.show_result);
-
+        showMe = (Button)findViewById(R.id.show_result);
         showMe.setOnClickListener(this);
 
+        Typeface custom_font = Typeface.createFromAsset(getAssets(),"fonts/ringofkerry.otf");
+        showMe.setTypeface(custom_font);
+
+        // Set up the user interaction to manually show or hide the system UI.
+        mContentView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toggle();
+            }
+        });
+
+        // Upon interacting with UI controls, delay any scheduled hide()
+        // operations to prevent the jarring behavior of controls going away
+        // while interacting with the UI.
+        findViewById(R.id.fullscreen_content_controls).setOnTouchListener(mDelayHideTouchListener);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+
+        // Trigger the initial hide() shortly after the activity has been
+        // created, to briefly hint to the user that UI controls
+        // are available.
+        delayedHide(100);
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (isBound) {
+            setUpWindowAnimations();
+            getResult();
 
 
 
-        result_text = (TextView)findViewById(R.id.result_text);
 
 
-
-
-
+        } else {
+            Log.i("Error", "No Service Connected");
+        }
 
 
     }
@@ -150,29 +170,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        //bind to local Service
-        Intent intent = new Intent(this, ConnectionService.class);
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+    public void setUpWindowAnimations(){
+        Fade fade = new Fade();
+        fade.setDuration(2000);
+        getWindow().setExitTransition(fade);
 
     }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-
-        //Unbind from the service
-        if (isBound) {
-            unbindService(mConnection);
-            isBound = false;
-        }
-
-    }
-
 
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
@@ -201,22 +204,40 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
     };
 
-
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
+    protected void onStart() {
+        super.onStart();
 
-        // Trigger the initial hide() shortly after the activity has been
-        // created, to briefly hint to the user that UI controls
-        // are available.
-        delayedHide(100);
+        //bind to local Service
+        Intent intent = new Intent(this, ConnectionService.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
 
+
+        //Unbind from the service
+        if (isBound) {
+            unbindService(mConnection);
+            isBound = false;
+        }
+
+    }
+
+    private void toggle() {
+        if (mVisible) {
+            hide();
+        } else {
+            show();
+        }
+    }
 
     private void hide() {
         // Hide UI first
-        ActionBar actionBar = getActionBar();
+        android.app.ActionBar actionBar = getActionBar();
         if (actionBar != null) {
             actionBar.hide();
         }
@@ -249,25 +270,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
 
-    @Override
-    public void onClick(View view) {
-
-
-        if (isBound) {
-
-            getResult();
-
-
-
-
-        } else {
-            Log.i("Error", "No Service Connected");
-        }
-
-    }
-
-
-
 
 
     //Subclass for the AsyncTask that manages all the connections
@@ -285,13 +287,21 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
 
         protected void onPostExecute(String result) {
+
+            Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(MainActivity.this).toBundle();
+
             Intent intent = new Intent(MainActivity.this, ResultActivity.class);
             intent.putExtra("result", result);
-            startActivity(intent);
+
+            startActivity(intent, bundle);
 
 
 
 
         }
+    }
+
+    public void restart(){
+        recreate();
     }
 }

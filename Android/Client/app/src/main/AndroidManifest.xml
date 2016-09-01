@@ -26,16 +26,15 @@
         <service android:name=".ConnectionService" />
 
         <activity
+            android:name=".ResultActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_result"
+            android:theme="@style/FullscreenTheme" />
+        <activity
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_main2"
-            android:theme="@style/FullscreenTheme" />
-        <activity
-            android:name=".ResultActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_result2"
             android:theme="@style/FullscreenTheme"></activity>
-
     </application>
 
 </manifest>

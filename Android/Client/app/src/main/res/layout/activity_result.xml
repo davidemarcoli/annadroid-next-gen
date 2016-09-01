@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    style="@style/FullscreenTheme"
     tools:context=".ResultActivity"
     android:background="@color/custom_orange_background">
 
@@ -13,25 +14,26 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="#FFFFFF">
+        android:background="#213cab">
         <TextView
             android:id="@+id/result_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
+            android:layout_gravity="center_vertical"
             android:elevation="4dp"
+            android:layout_margin="20dp"
             android:textStyle="bold"
             android:textColor="#000000"
             android:gravity="center"
             android:textSize="40sp"/>
-        <Button
-            android:id="@+id/try_again"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center"
-            android:elevation="4dp"
-            style="@style/Base.Widget.AppCompat.Button.Borderless"
-            android:text="Try Again?"/>
+
+        <ImageView
+            android:id="@+id/result_pic"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            />
+
 
 
     </LinearLayout>

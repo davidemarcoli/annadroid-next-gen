@@ -1,43 +1,50 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:orientation="vertical"
     android:layout_height="match_parent"
-    android:id="@+id/layout_root"
-    android:background="@color/custom_orange_background"
+    android:background="#0099cc"
     tools:context=".MainActivity">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
          TextureView, etc. -->
-    <LinearLayout
-        android:id="@+id/content"
+    <FrameLayout
+        android:id="@+id/fullscreen_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="20dp"
-        android:orientation="vertical"
-        android:background="#FFFFFF">
-            <Button
-                android:id="@+id/show_result"
-                android:layout_margin="50dp"
-                android:layout_width="200dp"
-                android:layout_gravity="bottom|center"
-                android:layout_height="wrap_content"
-                android:text="@string/show_me_button"
-                style="@style/Base.Widget.AppCompat.Button.Borderless"
-                />
+        android:gravity="center"
+        android:keepScreenOn="true"
+        android:textColor="#33b5e5"
+        android:textSize="50sp"
+        android:textStyle="bold" >
+
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:src="@drawable/luck"
+            android:layout_gravity="center"
+            android:elevation="15dp"/>
+
+        <Button
+            android:id="@+id/show_result"
+            android:layout_margin="50dp"
+            android:layout_width="200dp"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_height="76dp"
+            android:text="@string/show_me_button"
+            android:background="#0D47A1"
+            android:elevation="15dp"
+
+            />
 
 
-    </LinearLayout>
-
-
-
+        </FrameLayout>
 
     <!-- This FrameLayout insets its children based on system windows using
          android:fitsSystemWindows. -->
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="204dp"
+        android:layout_height="match_parent"
         android:fitsSystemWindows="true">
 
         <LinearLayout
@@ -47,15 +54,12 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center_horizontal"
             android:background="@color/black_overlay"
-            android:orientation="vertical"
+            android:orientation="horizontal"
             tools:ignore="UselessParent">
-
 
 
 
         </LinearLayout>
     </FrameLayout>
-
-
 
 </FrameLayout>

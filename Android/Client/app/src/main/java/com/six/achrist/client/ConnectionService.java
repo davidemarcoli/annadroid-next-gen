@@ -32,8 +32,7 @@ public class ConnectionService extends Service {
      * Class used for the client Binder.  Because we know this service always
      * runs in the same process as its clients, we don't need to deal with IPC.
      */
-
-    public class LocalBinder extends Binder{
+     public class LocalBinder extends Binder{
         ConnectionService getService(){
             // Return this instance of LocalService so clients can call public methods
             return ConnectionService.this;
@@ -68,7 +67,7 @@ public class ConnectionService extends Service {
             Log.i("Result",srvMsg);
             result = srvMsg;
 
-            if (result.equals("1")){
+            if (result.equals("2")||result.equals("4")||result.equals("6")||result.equals("8")){
                 result = "Congratulations, You win!";
             }else {
                 result = "Better luck next time!";
