@@ -2,53 +2,32 @@ package com.six.achrist.client;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ActivityOptions;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.graphics.Typeface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
-import android.transition.Fade;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.io.OutputStreamWriter;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class MainActivity extends Activity implements View.OnClickListener {
-
-    public static final String HOST = "192.168.0.109";
-    public static final int PORTNUMBER = 8123;
-    static final int READ_BLOCK_SIZE = 100;
+public class AddressActivity extends Activity implements View.OnClickListener {
 
     Button enterip;
-
-    Socket socket;
-
-
-    /**
+     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
      */
@@ -122,26 +101,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_main);
-
+        setContentView(R.layout.activity_address);
 
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
-        mContentView = findViewById(R.id.fullscreen_content);
+        mContentView = findViewById(R.id.addressbox);
 
-        TextView swipe = (TextView)findViewById(R.id.swipe_card);
-
-
-
-
-
-
-        swipe.setText("Warte auf Karte");
-
-
-
-        Typeface custom_font = Typeface.createFromAsset(getAssets(),"fonts/athletic.ttf");
-        swipe.setTypeface(custom_font);
 
         // Set up the user interaction to manually show or hide the system UI.
         mContentView.setOnClickListener(new View.OnClickListener() {
@@ -156,9 +121,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
         // while interacting with the UI.
         findViewById(R.id.fullscreen_content_controls).setOnTouchListener(mDelayHideTouchListener);
 
-        getResult();
+        enterip = (Button)findViewById(R.id.save_ip);
+        enterip.setOnClickListener(this);
 
-
+        TextView text = (TextView)findViewById(R.id.ip_text);
+        Typeface typeface = Typeface.createFromAsset(getAssets(),"fonts/athletic.ttf");
+        text.setTypeface(typeface);
     }
 
     @Override
@@ -171,32 +139,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         delayedHide(100);
     }
 
-    @Override
-    public void onClick(View view) {
-
-
-
-
-
-
-    }
-
-    public void getResult() {
-
-        /** Execute the async task that is in the ResultTask subclass*/
-
-        new ResultTask().execute();
-
-
-    }
-
-
-
-
-
-
-
-
     private void toggle() {
         if (mVisible) {
             hide();
@@ -206,11 +148,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private void hide() {
-        // Hide UI first
-        android.app.ActionBar actionBar = getActionBar();
-        if (actionBar != null) {
-            actionBar.hide();
-        }
+
         mControlsView.setVisibility(View.GONE);
         mVisible = false;
 
@@ -218,8 +156,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mHideHandler.removeCallbacks(mShowPart2Runnable);
         mHideHandler.postDelayed(mHidePart2Runnable, UI_ANIMATION_DELAY);
     }
-
-
 
     @SuppressLint("InlinedApi")
     private void show() {
@@ -242,92 +178,27 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
 
-    public String getHost() throws IOException {
+    @Override
+    public void onClick(View view) {
 
-        String hostname;
-        //reading text from file
+        EditText ipaddress = (EditText)findViewById(R.id.addressbox);
 
-            FileInputStream fileIn = openFileInput("ipaddress.txt");
-            InputStreamReader inputRead = new InputStreamReader(fileIn);
+        try {
+            FileOutputStream fileOut = openFileOutput("ipaddress.txt",MODE_PRIVATE);
+            OutputStreamWriter outWriter = new OutputStreamWriter(fileOut);
+            outWriter.write(ipaddress.getText().toString());
+            outWriter.close();
 
-            char[] inputBuffer = new char[READ_BLOCK_SIZE];
-            String ip = "";
-            int charRead;
-
-            while ((charRead = inputRead.read(inputBuffer)) > 0) {
-                //char to string conversion
-                String readstring = String.copyValueOf(inputBuffer, 0, charRead);
-                ip += readstring;
-            }
-            inputRead.close();
-            hostname = ip;
-
-
-            return hostname;
-
-
-    }
-
-
-
-    //Subclass for the AsyncTask that manages all the connections
-    public class ResultTask extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... strings) {
-
-
-
-            try {
-                String hostname = getHost();
-                socket = new Socket(hostname,PORTNUMBER);
-                Log.i("Connection ", "Connection established");
-
-                InputStream inStream = socket.getInputStream();
-                InputStreamReader inReader = new InputStreamReader(inStream);
-                BufferedReader buffReader = new BufferedReader(inReader);
-                String srvMsg;
-                String result = null;
-
-
-
-                while ((srvMsg = buffReader.readLine())!= null){
-
-                    result = srvMsg;
-
-                    if (result.contains("4")) {
-                        result = "Du Hast Gewonnen!";
-                    }else {
-                        result = "Leider Nichts Gewonnen";
-                    }
-
-
-                }
-
-                buffReader.close();
-                return result;
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                return "Oops, something went wrong";
-            }
-
+            //Show that message was saved
+            Toast.makeText(getBaseContext(),"File Saved successfully!", Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+            e.printStackTrace();
         }
-
-        protected void onPostExecute(String result) {
-
-            Intent intent = new Intent(MainActivity.this, ResultActivity.class);
-            intent.putExtra("result", result);
-            startActivity(intent);
+        Intent i = new Intent(this, MainActivity.class);
+        startActivity(i);
 
 
-
-
-
-        }
     }
 
-    public void restart(){
-        recreate();
-    }
+
 }

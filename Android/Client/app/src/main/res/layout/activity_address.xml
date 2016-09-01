@@ -2,46 +2,40 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    style="@style/FullscreenTheme"
     android:background="@drawable/space"
-    tools:context=".StartUpActivity">
+    tools:context="com.six.achrist.client.AddressActivity">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
          TextureView, etc. -->
 
-    <TextView
-        android:id="@+id/start_text"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:textStyle="bold"
-        android:text="Galaxy Quest"
+
+    <EditText
+        android:id="@+id/addressbox"
+        android:layout_width="418dp"
         android:textColor="#FFFFFF"
-        android:background="@drawable/space"
-        android:textSize="60sp"/>
-
-
-    <ProgressBar
-        android:id="@+id/progress_view"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_margin="20dp"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_height="116dp"
         android:layout_gravity="center"
+        android:hint="192.168.0.0"
+        android:inputType="phone"
         />
-
-
     <!-- This FrameLayout insets its children based on system windows using
          android:fitsSystemWindows. -->
     <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:layout_gravity="center">
+
+        <TextView
+            android:id="@+id/ip_text"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
-            android:layout_gravity="right|bottom">
-
-
+            android:layout_height="wrap_content"
+            android:textColor="#FFFFFF"
+            android:text="Bitte IP Eingeben"
+            android:textSize="40dp"
+            android:gravity="center"
+            />
 
         <LinearLayout
             android:id="@+id/fullscreen_content_controls"
@@ -55,9 +49,18 @@
 
 
 
-
-
         </LinearLayout>
+
+        <Button
+            android:id="@+id/save_ip"
+            style="?metaButtonBarButtonStyle"
+            android:layout_width="130dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="IP Speichern"
+            android:layout_gravity="center_horizontal|bottom" />
+
+
     </FrameLayout>
 
 </FrameLayout>

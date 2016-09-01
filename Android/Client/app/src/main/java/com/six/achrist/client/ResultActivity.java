@@ -8,15 +8,11 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.transition.Fade;
-import android.transition.TransitionManager;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 /**
@@ -25,7 +21,8 @@ import android.widget.TextView;
  */
 public class ResultActivity extends Activity implements View.OnClickListener{
 
-    ImageView resultImg;
+    //set the time the splash screen is displayed
+    private final int SPLASH_DISPLAY_LENGTH = 10000;
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -104,37 +101,43 @@ public class ResultActivity extends Activity implements View.OnClickListener{
 
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
-        mContentView = findViewById(R.id.result_text);
+        mContentView = findViewById(R.id.content);
 
 
-        resultImg = (ImageView)findViewById(R.id.result_pic);
-
+        ImageView img = (ImageView)findViewById(R.id.result_pic);
 
 
         Intent intent = getIntent();
         String result = intent.getStringExtra("result");
+
         TextView resultTxt = (TextView)findViewById(R.id.result_text);
 
         resultTxt.setText(result);
 
+        if (result.contains("Leider")){
+            img.setImageResource(R.drawable.frowny);
+        }else {
+            img.setImageResource(R.drawable.smiley);
+        }
 
-        Typeface custom_font = Typeface.createFromAsset(getAssets(),"fonts/ringofkerry.otf");
+
+
+        Typeface custom_font = Typeface.createFromAsset(getAssets(),"fonts/athletic.ttf");
         resultTxt.setTypeface(custom_font);
 
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                /*Create an Intent to start the next activity*/
+                Intent intent = new Intent(ResultActivity.this, MainActivity.class);
+                ResultActivity.this.startActivity(intent);
+                ResultActivity.this.finish();
+
+            }
+        }, SPLASH_DISPLAY_LENGTH);
 
 
-        if (result.contains("next")) {
 
-            resultImg.setImageResource(R.drawable.raincloud);
-
-
-
-
-        }else{
-
-            resultImg.setImageResource(R.drawable.rainbow);
-
-        }
 
     }
 

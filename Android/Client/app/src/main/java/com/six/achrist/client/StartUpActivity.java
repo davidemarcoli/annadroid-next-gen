@@ -103,7 +103,7 @@ public class StartUpActivity extends Activity {
 
         TextView startText = (TextView)findViewById(R.id.start_text);
 
-       Typeface custom_font = Typeface.createFromAsset(getAssets(),"fonts/ringofkerry.otf");
+       Typeface custom_font = Typeface.createFromAsset(getAssets(),"fonts/athletic.ttf");
         startText.setTypeface(custom_font);
 
 
@@ -112,7 +112,7 @@ public class StartUpActivity extends Activity {
             @Override
             public void run() {
                 /*Create an Intent to start the next activity*/
-                Intent intent = new Intent(StartUpActivity.this, MainActivity.class);
+                Intent intent = new Intent(StartUpActivity.this, AddressActivity.class);
                 StartUpActivity.this.startActivity(intent);
                 StartUpActivity.this.finish();
 

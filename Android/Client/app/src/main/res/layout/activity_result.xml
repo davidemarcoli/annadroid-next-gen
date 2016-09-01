@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     style="@style/FullscreenTheme"
     tools:context=".ResultActivity"
-    android:background="@color/custom_orange_background">
+    android:background="@drawable/space2">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
@@ -12,52 +12,55 @@
     <LinearLayout
         android:id="@+id/content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="#213cab">
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
         <TextView
             android:id="@+id/result_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
             android:elevation="4dp"
             android:layout_margin="20dp"
             android:textStyle="bold"
-            android:textColor="#000000"
+            android:textColor="#FFFFFF"
             android:gravity="center"
             android:textSize="40sp"/>
-
-        <ImageView
-            android:id="@+id/result_pic"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_gravity="center"
-            />
-
-
+    <ImageView
+        android:id="@+id/result_pic"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_gravity="center"
+        />
 
     </LinearLayout>
 
+
+
+            <LinearLayout
+                android:id="@+id/fullscreen_content_controls"
+                style="?metaButtonBarStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@color/black_overlay"
+                android:orientation="horizontal"
+                tools:ignore="UselessParent">
+
+
+
+
+            </LinearLayout>
+
+    <ImageView
+        android:layout_width="187dp"
+        android:layout_height="51dp"
+        android:layout_gravity="right|top"
+        android:src="@drawable/sixlogo"
+        />
+
+
     <!-- This FrameLayout insets its children based on system windows using
          android:fitsSystemWindows. -->
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
-
-        <LinearLayout
-            android:id="@+id/fullscreen_content_controls"
-            style="?metaButtonBarStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:background="@color/black_overlay"
-            android:orientation="horizontal"
-            tools:ignore="UselessParent">
-
-
-
-        </LinearLayout>
-    </FrameLayout>
 
 </FrameLayout>
